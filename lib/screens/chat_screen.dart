@@ -99,45 +99,47 @@ class _ChatScreenState extends State<ChatScreen> {
                   Spacer(),
                   ChatMessagesParent(
                       child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MesageStream(user: widget.user!),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: size.width * 0.7,
-                            child: TextFormField(
-                              controller: _messageEditingController,
-                              decoration: messageInputDecoration,
-                              onChanged: (value) {
-                                setState(() {
-                                  textMessage = value;
-                                });
-                              },
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: size.width * 0.7,
+                              child: TextFormField(
+                                controller: _messageEditingController,
+                                decoration: messageInputDecoration,
+                                onChanged: (value) {
+                                  setState(() {
+                                    textMessage = value;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          MessageSendButton(
-                            onTap: () {
-                              if (textMessage != "") {
-                                // clear the message input field
-                                _messageEditingController.clear();
+                            MessageSendButton(
+                              onTap: () {
+                                if (textMessage != "") {
+                                  // clear the message input field
+                                  _messageEditingController.clear();
 
-                                /// submit message to store into DB
-                                database.storeAMessage(
-                                  message: ChatMessage(
-                                    uid: widget.user!.uid,
-                                    createAt: DateTime.now(),
-                                    sendername: widget.user!.displayName,
-                                    senderEmail: widget.user!.email,
-                                    text: textMessage,
-                                  ),
-                                  user: widget.user!,
-                                );
-                              }
-                            },
-                          )
-                        ],
+                                  /// submit message to store into DB
+                                  database.storeAMessage(
+                                    message: ChatMessage(
+                                      uid: widget.user!.uid,
+                                      createAt: DateTime.now(),
+                                      sendername: widget.user!.displayName,
+                                      senderEmail: widget.user!.email,
+                                      text: textMessage,
+                                    ),
+                                    user: widget.user!,
+                                  );
+                                }
+                              },
+                            )
+                          ],
+                        ),
                       ),
                       SizedBox(height: 15.h),
                     ],
@@ -172,7 +174,7 @@ class MesageStream extends StatelessWidget {
             child: ListView.builder(
                 reverse: true,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: AlwaysScrollableScrollPhysics(),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var time =
@@ -207,6 +209,7 @@ class ChatUsersList extends StatelessWidget {
           padding: EdgeInsets.only(left: 30.w),
           height: 45,
           child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {

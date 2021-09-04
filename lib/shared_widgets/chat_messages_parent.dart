@@ -9,7 +9,6 @@ class ChatMessagesParent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 30.h),
       height: MediaQuery.of(context).size.height * 0.7,
       width: double.infinity,
       decoration: BoxDecoration(
