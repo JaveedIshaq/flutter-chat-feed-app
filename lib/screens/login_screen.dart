@@ -49,17 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: LoginBackground(
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            WelcomBackText(),
-            SigninIllustration(),
-            _error ? Text("Something went wrong") : GoogleSigninButton()
-          ],
-        ),
+      child: Column(
+        children: [
+          Spacer(),
+          WelcomBackText(),
+          SigninIllustration(),
+          _error ? Text("Something went wrong") : GoogleSigninButton(),
+          Spacer(),
+        ],
       ),
     ));
   }

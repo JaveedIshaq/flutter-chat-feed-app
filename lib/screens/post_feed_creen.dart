@@ -1,11 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_feed_app/config/colors.dart';
+import 'package:flutter_firebase_chat_feed_app/config/helper_functions.dart';
+import 'package:flutter_firebase_chat_feed_app/screens/new_post.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/logout_button.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/text_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+final _firestore = FirebaseFirestore.instance;
+
 class PostFeedScreen extends StatefulWidget {
-  const PostFeedScreen({Key? key}) : super(key: key);
+  const PostFeedScreen({Key? key, required this.user}) : super(key: key);
+
+  final User? user;
 
   @override
   _PostFeedScreenState createState() => _PostFeedScreenState();
@@ -17,83 +25,121 @@ class _PostFeedScreenState extends State<PostFeedScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kBgColor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ChatTextButton(
-                      title: 'Back',
-                      textColor: kPrimaryDarkColor,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      }),
-                  LogoutButton(
-                    iconColor: kPrimaryDarkColor,
-                    icon: Icons.logout,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.only(left: 30.w),
-                height: 50,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      child: Text(
-                        '+',
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    ),
-                    ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: CircleAvatar(
-                              child: Text('AB'),
-                            ),
-                          );
-                        }),
-                  ],
-                ),
-              ),
-              PostWidget(size: size),
-              PostWidget(size: size),
-            ],
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(top: 20.w, left: 0),
+          child: ChatTextButton(
+              title: 'Back',
+              textColor: kPrimaryDarkColor,
+              onTap: () {
+                Navigator.of(context).pop();
+              }),
+        ),
+        actions: [
+          LogoutButton(
+            iconColor: kPrimaryDarkColor,
+            icon: Icons.logout,
+            onTap: () {
+              Navigator.of(context).pop();
+            },
           ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateNewPost(user: widget.user),
+                  ),
+                );
+              },
+              child: Text(
+                'Create a New Post',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            FeedStream(user: widget.user),
+          ],
         ),
       ),
     );
   }
 }
 
+class FeedStream extends StatelessWidget {
+  FeedStream({Key? key, required this.user}) : super(key: key);
+
+  final User? user;
+
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('feedPosts').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              reverse: true,
+              shrinkWrap: true,
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                var time = snapshot.data!.docs[index].get('createAt').toDate();
+                var name = snapshot.data!.docs[index].get('userName');
+                var email = snapshot.data!.docs[index].get('userEmail');
+                var text = snapshot.data!.docs[index].get('text');
+
+                var likes = snapshot.data!.docs[index].get('likes');
+
+                print('$name $time $text');
+
+                return PostWidget(
+                  time: time,
+                  name: name,
+                  text: text,
+                  likes: likes,
+                  email: email,
+                );
+              });
+        });
+  }
+}
+
 class PostWidget extends StatelessWidget {
   const PostWidget({
     Key? key,
-    required this.size,
+    required this.text,
+    required this.name,
+    required this.time,
+    required this.likes,
+    required this.email,
   }) : super(key: key);
 
-  final Size size;
+  final String text;
+  final String name;
+  final DateTime time;
+  final String email;
+  final int likes;
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    var shortName = getInitials(name);
     return Column(
       children: [
         ListTile(
           leading: CircleAvatar(
             backgroundColor: kPrimaryColor.withOpacity(0.6),
             child: Text(
-              'JI',
+              '$shortName',
               style: TextStyle(
                 color: kPrimaryDarkColor,
                 fontWeight: FontWeight.bold,
@@ -101,14 +147,14 @@ class PostWidget extends StatelessWidget {
             ),
           ),
           title: Text(
-            'Javeed Ishaq',
+            '$name',
             style: TextStyle(
               color: kPrimaryDarkColor,
               fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
-            'ishaqjaveed1@gmail.com',
+            '$email',
             style: TextStyle(
                 color: Colors.grey[500],
                 fontWeight: FontWeight.w400,
@@ -122,10 +168,10 @@ class PostWidget extends StatelessWidget {
             color: kPrimaryColor.withOpacity(0.9),
             borderRadius: BorderRadius.circular(20),
           ),
+          padding: EdgeInsets.all(10),
           child: Center(
               child: Text(
-            "This is a post made by a user",
-            overflow: TextOverflow.ellipsis,
+            "$text",
             style: TextStyle(
               color: kBgColor,
               fontSize: 18,
@@ -140,10 +186,10 @@ class PostWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   "assets/images/heart-icon.png",
-                  color: kPrimaryColor,
+                  color: (likes > 0) ? kPrimaryColor : Colors.black,
                 ),
               ),
-              Text('55')
+              (likes > 0) ? Text('$likes') : Container(),
             ],
           ),
         ),

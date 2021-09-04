@@ -37,3 +37,28 @@ var messageInputDecoration = InputDecoration(
   ),
   hintText: "",
 );
+
+var postInputDecoration = InputDecoration(
+  filled: true,
+  fillColor: kBgColor,
+  contentPadding: EdgeInsets.all(20),
+  border: OutlineInputBorder(
+    borderSide: BorderSide(
+      color: kBgColor,
+    ),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+      color: kBgColor,
+    ),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+      color: kBgColor,
+    ),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  hintText: "",
+);

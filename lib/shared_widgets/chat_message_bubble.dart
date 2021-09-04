@@ -17,7 +17,7 @@ class ChatMessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final f = DateFormat('dd, MMM, yyyy, hh:mm a');
-    final date = f.format(new DateTime.now());
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

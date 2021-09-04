@@ -12,7 +12,7 @@ class ChatParent extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 30.h),
       height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(color: kPrimaryDarkColor),
       child: child,
     );

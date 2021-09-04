@@ -36,21 +36,41 @@ class LoginBackground extends StatelessWidget {
                   BoxDecoration(shape: BoxShape.circle, color: kPrimaryColor),
             ),
           ),
-          Positioned.fill(
-            child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: kBgColor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20),
-                    ),
-                  ),
-                )),
+          Positioned(
+            bottom: -60,
+            right: -30,
+            child: Container(
+              width: 140.w,
+              height: 140.h,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: kPrimaryColor),
+            ),
           ),
+          Positioned(
+            bottom: 30,
+            left: -30,
+            child: Container(
+              width: 70.w,
+              height: 70.h,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: kPrimaryColor),
+            ),
+          ),
+          // Positioned.fill(
+          //   child: Align(
+          //       alignment: Alignment.bottomCenter,
+          //       child: Container(
+          //         width: MediaQuery.of(context).size.width * 0.7,
+          //         height: 40.h,
+          //         decoration: BoxDecoration(
+          //           color: kBgColor,
+          //           borderRadius: BorderRadius.only(
+          //             topRight: Radius.circular(20),
+          //             topLeft: Radius.circular(20),
+          //           ),
+          //         ),
+          //       )),
+          // ),
           child,
         ],
       ),

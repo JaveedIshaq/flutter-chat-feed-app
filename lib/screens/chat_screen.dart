@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_feed_app/config/colors.dart';
+import 'package:flutter_firebase_chat_feed_app/config/helper_functions.dart';
 
 import 'package:flutter_firebase_chat_feed_app/config/ui_helpers.dart';
 import 'package:flutter_firebase_chat_feed_app/models/chat_message.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_firebase_chat_feed_app/shared_widgets/chat_message_bubbl
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/chat_messages_parent.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/chat_parent.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/chat_screen_heading.dart';
-import 'package:flutter_firebase_chat_feed_app/shared_widgets/chat_users_list.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/logout_button.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/message_send_button.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/text_button.dart';
@@ -67,8 +67,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              PostFeedScreen(),
+                                          builder: (context) => PostFeedScreen(
+                                            user: widget.user,
+                                          ),
                                         ),
                                       );
                                     }),
@@ -157,6 +158,9 @@ class MesageStream extends StatelessWidget {
   final User user;
 
   Widget build(BuildContext context) {
+    print('height: ${MediaQuery.of(context).size.height}');
+    print('width: ${MediaQuery.of(context).size.width}');
+
     return StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('chatMessages').snapshots(),
         builder: (context, snapshot) {
@@ -183,5 +187,37 @@ class MesageStream extends StatelessWidget {
                 }),
           );
         });
+  }
+}
+
+/// user list
+class ChatUsersList extends StatelessWidget {
+  const ChatUsersList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('users').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return Container(
+          padding: EdgeInsets.only(left: 30.w),
+          height: 45,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                var name = getInitials(snapshot.data!.docs[index].get('name'));
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: CircleAvatar(child: Text('$name'.toUpperCase())),
+                );
+              }),
+        );
+      },
+    );
   }
 }

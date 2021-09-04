@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(360, 690),
       builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Firebase Chat Feed App',

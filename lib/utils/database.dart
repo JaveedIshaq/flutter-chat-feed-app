@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_firebase_chat_feed_app/models/aap_user.dart';
 import 'package:flutter_firebase_chat_feed_app/models/chat_message.dart';
+import 'package:flutter_firebase_chat_feed_app/models/feed_post.dart';
 
 class Database {
   static final Database _singleton = Database._internal();
@@ -16,9 +17,13 @@ class Database {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  /// The main Firestore user collection
+  /// The main Firestore Messages collection
   final CollectionReference messageCollection =
       FirebaseFirestore.instance.collection('chatMessages');
+
+  /// The main Firestore Posts collection
+  final CollectionReference postsCollection =
+      FirebaseFirestore.instance.collection('feedPosts');
 
   storeUserData({required User user}) async {
     AppUser appUser =
@@ -35,6 +40,21 @@ class Database {
     await messageCollection
         .add(message.toJson())
         .then((value) => print("Message added int Database"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  storePost({required FeedPost post, required User user}) async {
+    await postsCollection
+        .add(post.toJson())
+        .then((value) => print("post added int Database"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  updateJumpCount({required User user, required int likeCount}) async {
+    await postsCollection
+        .doc(user.uid)
+        .update({'likes': likeCount})
+        .then((value) => print("Like count Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
 }

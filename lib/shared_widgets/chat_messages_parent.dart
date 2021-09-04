@@ -11,7 +11,7 @@ class ChatMessagesParent extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 30.h),
       height: MediaQuery.of(context).size.height * 0.7,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
