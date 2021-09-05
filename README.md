@@ -2,15 +2,9 @@
 
 A new Flutter project.
 
-## Getting Started
+APK Download Link
 
-This project is a starting point for a Flutter application.
+- [Apk Link](https://github.com/JaveedIshaq/flutter_test_app/blob/master/lottery-app-ui.apk?raw=true)
+## Large Mobile Screen Shots
+<img src="https://github.com/JaveedIshaq/flutter-chat-feed-app/blob/master/screenshots/splash.jpeg?raw=true" width="400"> <img src="https://github.com/JaveedIshaq/flutter-chat-feed-app/blob/master/screenshots/login.jpeg?raw=true" width="400"> <img src="https://github.com/JaveedIshaq/flutter-chat-feed-app/blob/master/screenshots/chat.jpeg?raw=true" width="400"> <img src="https://github.com/JaveedIshaq/flutter-chat-feed-app/blob/master/screenshots/post-feed.jpeg?raw=true" width="400"> <img src="https://github.com/JaveedIshaq/flutter-chat-feed-app/blob/master/screenshots/creat-post.jpeg?raw=true" width="400">
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
