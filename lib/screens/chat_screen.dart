@@ -164,7 +164,10 @@ class MesageStream extends StatelessWidget {
     print('width: ${MediaQuery.of(context).size.width}');
 
     return StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('chatMessages').snapshots(),
+        stream: _firestore
+            .collection('chatMessages')
+            .orderBy('createAt')
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -172,7 +175,7 @@ class MesageStream extends StatelessWidget {
 
           return Expanded(
             child: ListView.builder(
-                reverse: true,
+                reverse: false,
                 shrinkWrap: true,
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: snapshot.data!.docs.length,

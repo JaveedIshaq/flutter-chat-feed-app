@@ -7,6 +7,7 @@ import 'package:flutter_firebase_chat_feed_app/screens/new_post.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/logout_button.dart';
 import 'package:flutter_firebase_chat_feed_app/shared_widgets/text_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share/share.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -79,7 +80,8 @@ class FeedStream extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('feedPosts').snapshots(),
+        stream:
+            _firestore.collection('feedPosts').orderBy('createAt').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -182,18 +184,53 @@ class PostWidget extends StatelessWidget {
           width: size.width * 0.8,
           child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  "assets/images/heart-icon.png",
-                  color: (likes > 0) ? kPrimaryColor : Colors.black,
-                ),
-              ),
-              (likes > 0) ? Text('$likes') : Container(),
+              //buildLikeIconButton(),
+              buildShareIconButton(postText: text, userName: name),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  InkWell buildLikeIconButton() {
+    return InkWell(
+      onTap: () {},
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              "assets/images/heart-icon.png",
+              color: (likes > 0) ? kPrimaryColor : Colors.black,
+            ),
+          ),
+          (likes > 0) ? Text('$likes') : Container(),
+        ],
+      ),
+    );
+  }
+
+  InkWell buildShareIconButton({required String postText, required userName}) {
+    return InkWell(
+      onTap: () async {
+        await Share.share(
+          'a Post by $userName:\n\n$postText',
+          subject: "a Post by: $userName",
+        );
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              "assets/images/share_icon.png",
+              color: kPrimaryDarkColor,
+            ),
+          ),
+          Text('Share')
+        ],
+      ),
     );
   }
 }
